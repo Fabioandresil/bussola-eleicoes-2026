@@ -1,0 +1,333 @@
+<title>Bússola Eleições - 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: cédula em coluna única — abas de área no topo, cartões de proposta sem nome, painel de resultado ao final */
+:root{
+  --bg:#f3f5f4; --surface:#ffffff; --ink:#15211d; --muted:#56635e; --line:#d5ddd9;
+  --accent:#1d6b47; --accent-soft:#e2efe8; --accent-ink:#ffffff; --warn:#8a5a00; --warn-soft:#fbf1dc;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1513; --surface:#17201c; --ink:#e4ece8; --muted:#9aa8a2; --line:#2a3631;
+  --accent:#4fb784; --accent-soft:#1b3328; --accent-ink:#0b1410; --warn:#e3b34f; --warn-soft:#2e2614; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1513; --surface:#17201c; --ink:#e4ece8; --muted:#9aa8a2; --line:#2a3631;
+  --accent:#4fb784; --accent-soft:#1b3328; --accent-ink:#0b1410; --warn:#e3b34f; --warn-soft:#2e2614; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55}
+.wrap{max-width:820px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.1}
+h1{font-size:clamp(30px,6vw,46px);font-weight:800;letter-spacing:-.01em}
+h2{font-size:24px;font-weight:700}
+p{margin:0}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.lead{color:var(--muted);max-width:62ch}
+header{display:flex;flex-direction:column;gap:12px}
+.note{background:var(--warn-soft);color:var(--ink);border-radius:10px;padding:12px 14px;font-size:13.5px;display:flex;flex-direction:column;gap:6px}
+.note b{color:var(--warn)}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding-block:10px;z-index:2;border-bottom:1px solid var(--line)}
+.tab{font:600 14px var(--body);border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 14px;cursor:pointer;display:flex;gap:8px;align-items:center}
+.tab .n{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tab[aria-selected="true"] .n{color:var(--bg)}
+.tab.res{border-style:dashed}
+.tab:focus-visible,.card:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.panel{display:flex;flex-direction:column;gap:14px}
+.panel-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.hint{color:var(--muted);font-size:13.5px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.card{text-align:left;font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 14px 12px;cursor:pointer;display:flex;flex-direction:column;gap:10px;min-width:0;transition:border-color .15s,background .15s}
+.card:hover{border-color:var(--accent)}
+.card .box{width:20px;height:20px;border:2px solid var(--muted);border-radius:5px;display:grid;place-items:center;flex:none}
+.card[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent)}
+.card[aria-pressed="true"] .box{background:var(--accent);border-color:var(--accent)}
+.card[aria-pressed="true"] .box::after{content:"";width:9px;height:5px;border-left:2px solid var(--accent-ink);border-bottom:2px solid var(--accent-ink);transform:rotate(-45deg) translate(1px,-1px)}
+.card .top{display:flex;gap:10px;align-items:flex-start}
+.card .who{font-family:var(--mono);font-size:12px;color:var(--accent)}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.btn{font:600 15px var(--body);border:0;border-radius:8px;padding:11px 18px;cursor:pointer}
+.btn.go{background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.count{font-family:var(--mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.rank{display:flex;flex-direction:column;gap:10px}
+.row{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.row .line{display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap}
+.row .name{font-family:var(--display);font-weight:700;font-size:19px}
+.row .party{color:var(--muted);font-size:13px;margin-left:6px;font-family:var(--body);font-weight:500}
+.row .score{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:14px}
+.meter{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--accent);border-radius:4px}
+.row ul{margin:0;padding-left:18px;color:var(--muted);font-size:13.5px;display:flex;flex-direction:column;gap:2px}
+.row .flag{font-size:12.5px;color:var(--warn)}
+.empty{color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:18px}
+details{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+summary{cursor:pointer;font-weight:600}
+.src{display:flex;flex-direction:column;gap:6px;margin-top:10px;font-size:13.5px}
+.src a{color:var(--accent);word-break:break-word}
+footer{color:var(--muted);font-size:12.5px}
+.acts{display:flex;flex-wrap:wrap;gap:8px}
+a.btn{text-decoration:none;display:inline-flex;align-items:center}
+.btn.wa{background:var(--wa);color:#fff}
+:root{--wa:#1a8d4f}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+@media print{
+  :root:not(#_){--bg:#fff;--surface:#fff;--ink:#111;--muted:#444;--line:#ccc;--accent:#1d6b47;--accent-soft:#eef5f1;color-scheme:light}
+  .tabs,.no-print,details,.note{display:none!important}
+  .wrap{padding-block:0;gap:14px;max-width:none}
+  .row{break-inside:avoid}
+  .meter{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  a{color:var(--ink)}
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Governo do DF · 1º turno · 4 de outubro de 2026</span>
+    <h1>Quais propostas para o DF você apoia?</h1>
+    <p class="lead">Leia as propostas dos candidatos a governador em cinco áreas, sem saber quem as fez. Marque as que você apoia. No fim, a página mostra de quais candidatos são as propostas que você escolheu.</p>
+    <div class="note">
+      <span><b>Como os dados foram montados.</b> Resumos em linguagem própria, a partir dos planos de governo registrados no TSE (Celina Leão, Leandro Grass, Paula Belmonte, Kiko Caputo) e de reportagens e sabatinas (Ricardo Cappelli e candidatos menores, cujo plano não consegui abrir). A cobertura não é igual para todos: candidatos com menos propostas encontradas tendem a pontuar menos. Confira sempre a fonte original.</span>
+      <span><b>Situação dos registros.</b> José Roberto Arruda (PSD) teve o registro negado pelo TSE em 24/9; o nome ainda aparece na urna, mas o voto nele será anulado, por isso ficou fora. Elisson Ferreira (Agir) teve o registro indeferido pelo TRE-DF e recorreu. Não encontrei propostas de Expedito Mendonça (PCO). Consulte a situação de cada um no DivulgaCandContas.</span>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <section id="panel" class="panel" aria-live="polite"></section>
+
+  <details>
+    <summary>Fontes consultadas</summary>
+    <div class="src" id="sources"></div>
+  </details>
+
+  <footer>Página informativa e apartidária, montada em 3/10/2026. As propostas aparecem em ordem aleatória a cada visita. Nenhum candidato é recomendado.</footer>
+</div>
+
+<script>
+const AREAS=[
+ {id:"saude",label:"Saúde"},{id:"educacao",label:"Educação"},{id:"economia",label:"Economia"},
+ {id:"seguranca",label:"Segurança pública"},{id:"transporte",label:"Transporte público"}];
+
+const SRC={
+ celina:["Plano de governo de Celina Leão (TSE)","https://divulgacandcontas.tse.jus.br/divulga/rest/arquivo/doc/70017118691"],
+ grass:["Programa de governo de Leandro Grass (TSE)","https://divulgacandcontas.tse.jus.br/divulga/rest/arquivo/doc/70017113505"],
+ belmonte:["Plano de governo de Paula Belmonte (TSE)","https://divulgacandcontas.tse.jus.br/divulga/rest/arquivo/doc/70017118167"],
+ caputo:["Plano de governo de Kiko Caputo (TSE)","https://divulgacandcontas.tse.jus.br/divulga/rest/arquivo/doc/70017104583"],
+ caputoIta:["Itatiaia — bandeiras de Kiko Caputo","https://www.itatiaia.com.br/politica/eleicoes/conheca-a-carreira-politica-de-kiko-caputo-pre-candidato-ao-governo-do-df/"],
+ caputoMet:["Metrópoles — Caputo promete intervenção na saúde","https://www.metropoles.com/distrito-federal/lancado-pelo-novo-ao-gdf-kiko-caputo-promete-intervencao-na-saude"],
+ caputoJbr:["Jornal de Brasília — sabatina de Kiko Caputo","https://jornaldebrasilia.com.br/jbr-tv/kiko-caputo-e-o-ultimo-sabatinado-do-jbr-eleicoes/"],
+ cappSaude:["Correio da Manhã — Cappelli e o programa Fila Zero","https://www.correiodamanha.com.br/politica/2026/09/317593-cappelli-cita-corrupcao-no-iges-df-e-promete-zerar-filas-na-saude.html"],
+ cappFila:["SouBrasília — Fila Zero em até dois anos","https://soubrasilia.com/?p=11268"],
+ cappIpva:["O Hoje — Cappelli em São Sebastião (IPVA, Fila Zero)","https://ohoje.com/2026/08/26/cappelli-leva-propostas-para-saude-e-motoristas-no-df/"],
+ cappMassa:["O Hoje — Cappelli: transporte de massa e hospitais","https://ohoje.com/2026/09/16/vamos-ampliar-o-transporte-de-massa-diz-cappelli-em-agenda-pelo-df/"],
+ cappHora:["O Hoje — Cappelli: meta de uma hora de deslocamento","https://ohoje.com/2026/08/20/cappelli-leva-campanha-no-df-a-estudantes-e-a-feira-noturna-de-samambaia-nesta-quinta-feira/"],
+ cappCB:["Correio Braziliense — entrevista de Cappelli ao CB.Poder","https://www.correiobraziliense.com.br/cidades-df/2026/06/7436785-psb-aposta-em-frente-ampla-para-eleicao-em-2026.html"],
+ cappRest:["O Hoje — Cappelli no Sol Nascente","https://ohoje.com/2026/08/24/agenda-de-cappelli-tem-panfletagem-no-df-nesta-segunda-feira/"],
+ jbr4:["Jornal de Brasília — propostas de Elisson, Samara, Robson e Rico","https://jornaldebrasilia.com.br/brasilia/quatro-candidatos-alem-dos-lideres-aparecem-na-pesquisa-para-o-gdf/"],
+ arruda:["CNN Brasil — TSE barra candidatura de Arruda","https://www.cnnbrasil.com.br/eleicoes/tse-decide-barrar-candidatura-de-arruda-ao-governo-do-df/"],
+ tre:["SouBrasília — TRE-DF indefere 3 das 11 candidaturas","https://soubrasilia.com/?p=12679"]
+};
+
+const C={
+ celina:{name:"Celina Leão",party:"PP"},
+ grass:{name:"Leandro Grass",party:"PT · coligação"},
+ belmonte:{name:"Paula Belmonte",party:"PSDB-Cidadania"},
+ caputo:{name:"Kiko Caputo",party:"Novo"},
+ cappelli:{name:"Ricardo Cappelli",party:"PSB",flag:"Plano completo não localizado; propostas tiradas de entrevistas e agendas."},
+ elisson:{name:"Elisson Ferreira",party:"Agir",flag:"Registro indeferido pelo TRE-DF, com recurso. Propostas de reportagem."},
+ samara:{name:"Samara Mineiro",party:"UP",flag:"Propostas de reportagem; cobertura parcial."},
+ robson:{name:"Professor Robson",party:"PSTU",flag:"Propostas de reportagem; cobertura parcial."},
+ rico:{name:"Rico Pinheiro",party:"PRTB",flag:"Propostas de reportagem; cobertura parcial."},
+ expedito:{name:"Expedito Mendonça",party:"PCO",flag:"Nenhuma proposta encontrada nas fontes consultadas."}
+};
+
+const P=[
+ // SAÚDE
+ ["saude","celina","Criar o \"Expresso da Saúde\", usando telemedicina e inteligência artificial para encurtar a espera por consultas, exames e procedimentos.","celina"],
+ ["saude","celina","Construir 7 novas UPAs e inaugurar os hospitais do Guará (ortopédico), São Sebastião, Recanto das Emas, o novo de Ceilândia e o Oncológico.","celina"],
+ ["saude","celina","Levar os CAPS (saúde mental) a todas as regiões administrativas.","celina"],
+ ["saude","grass","Garantir consulta com especialista e exame em até 30 dias até o fim do mandato.","grass"],
+ ["saude","grass","Devolver à Secretaria de Saúde o comando dos hospitais e UPAs hoje geridos pelo Iges-DF.","grass"],
+ ["saude","grass","Quase dobrar as equipes de Saúde da Família (de cerca de 600 para 1.100) e convocar os 5 mil enfermeiros aprovados em concurso.","grass"],
+ ["saude","belmonte","Criar o Hospital do Idoso, ligado às UBS, ao atendimento em casa e à reabilitação.","belmonte"],
+ ["saude","belmonte","Fazer auditoria ampla do Iges-DF (contratos, compras e resultados) e publicar seus dados.","belmonte"],
+ ["saude","belmonte","Criar fluxos prioritários para exames e tratamento de câncer, encurtando o tempo entre suspeita e início do tratamento.","belmonte"],
+ ["saude","caputo","Fazer uma \"intervenção imediata\" na saúde, com recomposição da carreira dos profissionais e reformulação do Iges-DF.","caputoMet"],
+ ["saude","caputo","Tornar as UBS mais resolutivas e dar transparência às filas de regulação.","caputo"],
+ ["saude","cappelli","Programa \"Fila Zero\": mutirões com a rede pública e o setor privado para zerar filas de consultas, exames e cirurgias em até 24 meses.","cappFila"],
+ ["saude","cappelli","Contratar os profissionais em falta na rede, como cerca de 5.300 médicos e 4.200 técnicos de enfermagem.","cappSaude"],
+ ["saude","cappelli","Concluir as obras dos hospitais do Recanto das Emas, São Sebastião e Ortopédico do Guará, e um segundo hospital em Ceilândia.","cappMassa"],
+ ["saude","elisson","Criar prontuário eletrônico único e dar transparência às filas de consultas, exames e cirurgias.","jbr4"],
+ ["saude","elisson","Fazer auditoria no Iges-DF.","jbr4"],
+ ["saude","samara","Contratar 15 mil profissionais de saúde por concurso e encerrar as privatizações, com SUS integralmente público.","jbr4"],
+ ["saude","robson","Extinguir o Iges-DF e manter rede 100% pública e estatal, com concursos.","jbr4"],
+ ["saude","rico","Tornar o atendimento no Hospital da Criança de Brasília a prioridade máxima da gestão.","jbr4"],
+ // EDUCAÇÃO
+ ["educacao","celina","Programa \"Primeiras Letras\": toda criança lendo e escrevendo ao fim do 2º ano.","celina"],
+ ["educacao","celina","Pagar bolsa a alunos do ensino médio público vinculada a frequência e desempenho (\"Futuro Agora\").","celina"],
+ ["educacao","celina","Ampliar as escolas cívico-militares, conforme critérios técnicos.","celina"],
+ ["educacao","celina","Criar a Bolsa Universitária DF para estudantes de baixa renda.","celina"],
+ ["educacao","grass","Zerar a fila de creche com rede própria e conveniada, priorizando as regiões mais vulneráveis.","grass"],
+ ["educacao","grass","Aproximar o salário dos professores da média das carreiras de nível superior do GDF.","grass"],
+ ["educacao","grass","Garantir eleição de diretores e conselhos escolares ativos (gestão democrática).","grass"],
+ ["educacao","grass","Passe livre estudantil pleno e transporte escolar nas áreas rurais e periféricas.","grass"],
+ ["educacao","belmonte","Construir refeitório em todas as escolas públicas do DF.","belmonte"],
+ ["educacao","belmonte","Substituir aos poucos os professores temporários por concursados.","belmonte"],
+ ["educacao","belmonte","Reformular o Cartão PDAF para dar mais autonomia aos diretores na compra e na manutenção.","belmonte"],
+ ["educacao","belmonte","Construir escolas onde hoje muitos alunos dependem de transporte escolar para estudar longe de casa.","belmonte"],
+ ["educacao","caputo","Reformar as escolas, contratar mais professores e expandir o ensino em tempo integral.","caputoIta"],
+ ["educacao","caputo","Ligar o ensino profissionalizante às vagas reais do mercado de trabalho.","caputoIta"],
+ ["educacao","cappelli","Nomear os professores concursados que aguardam convocação.","cappCB"],
+ ["educacao","elisson","Criar 8 mil vagas em creches.","jbr4"],
+ ["educacao","robson","Ampliar o investimento em educação e acabar com a militarização das escolas.","jbr4"],
+ ["educacao","rico","Melhorar a alimentação dos alunos do ensino fundamental e colocar o DF entre os 5 melhores desempenhos escolares do país.","jbr4"],
+ // ECONOMIA
+ ["economia","celina","Recuperar a capacidade financeira do BRB, reforçando governança, controles e gestão de riscos.","celina"],
+ ["economia","celina","Condicionar incentivos fiscais a contrapartidas de emprego e investimento.","celina"],
+ ["economia","celina","Criar 5 polos de desenvolvimento (beleza, logística, alimentos, fármacos e agricultura).","celina"],
+ ["economia","celina","Montar pontos de apoio para trabalhadores de aplicativo, com descanso, higiene e recarga.","celina"],
+ ["economia","grass","Auditoria pública do acordo BRB/Master em 90 dias, com todos os documentos abertos.","grass"],
+ ["economia","grass","Rever todas as renúncias fiscais, mantendo só as que comprovem retorno em emprego.","grass"],
+ ["economia","grass","Programa de renegociação de dívidas de servidores e da população (\"Desenrola\").","grass"],
+ ["economia","grass","Não privatizar Caesb, Metrô-DF e CEB Iluminação.","grass"],
+ ["economia","belmonte","Reduzir o número de secretarias para menos da metade logo no primeiro ato de governo.","belmonte"],
+ ["economia","belmonte","Criar um Gabinete de Combate à Corrupção, com cruzamento de dados sobre contratos e gastos.","belmonte"],
+ ["economia","belmonte","Auditoria independente da situação do BRB, com resultados divulgados.","belmonte"],
+ ["economia","belmonte","Simplificar licenças e a abertura de empresas e fazer de Brasília um polo de tecnologia.","belmonte"],
+ ["economia","caputo","Rever despesas e avaliar incentivos fiscais pelo benefício público que geram.","caputo"],
+ ["economia","caputo","Simplificar a jornada do empreendedor e oferecer crédito produtivo orientado a pequenos negócios.","caputo"],
+ ["economia","cappelli","Isentar de IPVA os motoristas de aplicativo.","cappIpva"],
+ ["economia","cappelli","Recuperar o BRB e punir os responsáveis pela crise do banco.","cappCB"],
+ ["economia","cappelli","Ampliar a rede de restaurantes comunitários, com uma unidade no Plano Piloto.","cappRest"],
+ ["economia","elisson","Recuperar o BRB e investir em energia solar e eletromobilidade.","jbr4"],
+ ["economia","rico","Auditar o BRB para tentar recuperar cerca de R$ 12 bilhões ligados às operações com o Banco Master.","jbr4"],
+ // SEGURANÇA
+ ["seguranca","celina","Ampliar o programa DF 360 com inteligência artificial no monitoramento por câmeras.","celina"],
+ ["seguranca","celina","Criar delegacias e batalhões nas regiões administrativas que ainda não têm.","celina"],
+ ["seguranca","celina","Colocar 100% dos presos para trabalhar dentro das unidades prisionais.","celina"],
+ ["seguranca","celina","Defender isonomia salarial entre a Polícia Civil do DF e a Polícia Federal.","celina"],
+ ["seguranca","grass","Pacto contra o Feminicídio: classificação de risco em 100% das ocorrências e tornozeleira no agressor.","grass"],
+ ["seguranca","grass","Policiamento comunitário, com policiais que conhecem o bairro, e câmeras com monitoramento ativo.","grass"],
+ ["seguranca","grass","Iluminar o trajeto casa–ponto de ônibus–escola, começando pelas regiões periféricas.","grass"],
+ ["seguranca","belmonte","\"Muralha Digital\": integrar câmeras de vários órgãos com reconhecimento facial e leitura de placas.","belmonte"],
+ ["seguranca","belmonte","Recompor os efetivos das polícias e dos bombeiros por concurso.","belmonte"],
+ ["seguranca","belmonte","Criar um gabinete integrado com as forças de segurança de Goiás.","belmonte"],
+ ["seguranca","caputo","Pôr a Procuradoria do DF para defender juridicamente policiais no exercício da função.","caputoJbr"],
+ ["seguranca","samara","Delegacias da mulher 24 horas em todas as regiões e mais casas-abrigo.","jbr4"],
+ ["seguranca","robson","Desmilitarizar a Polícia Militar.","jbr4"],
+ // TRANSPORTE
+ ["transporte","celina","Tarifa zero no transporte público para a população de baixa renda.","celina"],
+ ["transporte","celina","Concluir 4 novas estações da Linha 1 do metrô (Samambaia e Ceilândia) e implantar a Linha 2 até o Gama.","celina"],
+ ["transporte","celina","Implantar o anel viário para aliviar a EPIG e o centro, e articular o trem Brasília–Luziânia.","celina"],
+ ["transporte","grass","Tarifa zero para todos, implantada de forma gradual.","grass"],
+ ["transporte","grass","Ônibus circulando depois das 22h e desembarque fora do ponto à noite (\"parada segura\").","grass"],
+ ["transporte","grass","Levar o metrô à Asa Norte, captando R$ 3,2 bilhões do Novo PAC para mobilidade.","grass"],
+ ["transporte","belmonte","Novas linhas de metrô: Asa Norte até Planaltina, extensão ao Sol Nascente e uma linha até Gama e Santa Maria.","belmonte"],
+ ["transporte","belmonte","Bilhetagem única para ônibus, BRT e metrô.","belmonte"],
+ ["transporte","belmonte","Revisar os contratos das empresas de ônibus e a tarifa técnica paga a elas.","belmonte"],
+ ["transporte","belmonte","Permitir que carros de aplicativo usem as faixas exclusivas, preservando a prioridade do ônibus.","belmonte"],
+ ["transporte","caputo","Integrar o transporte coletivo e a bilhetagem, com corredores e ligações entre regiões.","caputo"],
+ ["transporte","cappelli","Meta de no máximo uma hora no trajeto casa–trabalho.","cappHora"],
+ ["transporte","cappelli","Ampliar o metrô e os corredores de BRT para mais regiões.","cappMassa"],
+ ["transporte","elisson","Reduzir a tarifa aos poucos e expandir o metrô.","jbr4"],
+ ["transporte","robson","Estatizar as empresas de ônibus e o metrô, com tarifa zero.","jbr4"]
+].map((r,i)=>({id:"p"+i,area:r[0],cand:r[1],text:r[2],src:r[3]}));
+
+// embaralhar uma vez por visita
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+const order={};AREAS.forEach(a=>order[a.id]=shuffle(P.filter(p=>p.area===a.id)));
+const chosen=new Set();
+let current="saude";
+
+const tabs=document.getElementById("tabs"),panel=document.getElementById("panel");
+
+function renderTabs(){
+  tabs.innerHTML="";
+  [...AREAS,{id:"resultado",label:"Ver resultado"}].forEach(a=>{
+    const b=document.createElement("button");
+    b.className="tab"+(a.id==="resultado"?" res":"");b.id="tab-"+a.id;b.setAttribute("role","tab");
+    b.setAttribute("aria-selected",current===a.id);
+    const n=a.id==="resultado"?chosen.size:order[a.id].filter(p=>chosen.has(p.id)).length;
+    b.innerHTML=a.label+' <span class="n">'+n+'</span>';
+    b.onclick=()=>{current=a.id;render();window.scrollTo({top:tabs.offsetTop-4,behavior:"smooth"})};
+    tabs.appendChild(b);
+  });
+}
+
+function renderArea(id){
+  const idx=AREAS.findIndex(a=>a.id===id),area=AREAS[idx],list=order[id];
+  panel.innerHTML='<div class="panel-head"><h2>'+area.label+'</h2><span class="hint">Marque quantas quiser. Autoria escondida.</span></div><div class="grid" id="grid"></div>';
+  const g=panel.querySelector("#grid");
+  list.forEach(p=>{
+    const c=document.createElement("button");c.className="card";c.id="card-"+p.id;
+    c.setAttribute("aria-pressed",chosen.has(p.id));
+    c.innerHTML='<div class="top"><span class="box" aria-hidden="true"></span><span>'+p.text+'</span></div>';
+    c.onclick=()=>{chosen.has(p.id)?chosen.delete(p.id):chosen.add(p.id);c.setAttribute("aria-pressed",chosen.has(p.id));renderTabs();updateBar()};
+    g.appendChild(c);
+  });
+  const bar=document.createElement("div");bar.className="bar";
+  const next=idx<AREAS.length-1?AREAS[idx+1]:null;
+  bar.innerHTML='<span class="count" id="count"></span>';
+  const b=document.createElement("button");b.className="btn go";b.id="next";
+  b.textContent=next?"Próxima área: "+next.label:"Ver resultado";
+  b.onclick=()=>{current=next?next.id:"resultado";render();window.scrollTo({top:tabs.offsetTop-4,behavior:"smooth"})};
+  bar.appendChild(b);panel.appendChild(bar);updateBar();
+}
+function updateBar(){const el=document.getElementById("count");if(el)el.textContent=chosen.size+" proposta(s) marcada(s) no total"}
+
+function renderResult(){
+  panel.innerHTML='<div class="panel-head"><h2>Seu resultado</h2><span class="hint">Ordem pelo número de propostas suas que são de cada candidato.</span></div>';
+  if(!chosen.size){panel.insertAdjacentHTML("beforeend",'<p class="empty">Você ainda não marcou nenhuma proposta. Volte às áreas acima e marque as que apoia.</p>');return}
+  const total={},hits={};
+  P.forEach(p=>{total[p.cand]=(total[p.cand]||0)+1;if(chosen.has(p.id))(hits[p.cand]=hits[p.cand]||[]).push(p)});
+  const ids=Object.keys(C).sort((a,b)=>((hits[b]||[]).length-(hits[a]||[]).length)||((total[b]||0)-(total[a]||0)));
+  const max=Math.max(...ids.map(i=>(hits[i]||[]).length));
+  const rank=document.createElement("div");rank.className="rank";
+  ids.forEach(i=>{
+    const h=hits[i]||[],t=total[i]||0,c=C[i];
+    const pct=t?Math.round(h.length/t*100):0;
+    const row=document.createElement("div");row.className="row";
+    row.innerHTML='<div class="line"><span class="name">'+c.name+'<span class="party">'+c.party+'</span></span>'+
+      '<span class="score">'+h.length+' de '+t+(t?' · '+pct+'%':'')+'</span></div>'+
+      '<div class="meter"><i style="width:'+(max?h.length/max*100:0)+'%"></i></div>'+
+      (h.length?'<ul>'+h.map(p=>'<li>'+p.text+' <a href="'+SRC[p.src][1]+'" target="_blank" rel="noopener">fonte</a></li>').join("")+'</ul>':'')+
+      (c.flag?'<span class="flag">'+c.flag+'</span>':'');
+    rank.appendChild(row);
+  });
+  panel.appendChild(rank);
+  const r=document.createElement("div");r.className="bar no-print";
+  r.innerHTML='<span class="hint">"x de y" = quantas das propostas encontradas para o candidato você marcou.</span>';
+  const acts=document.createElement("div");acts.className="acts";
+
+  // WhatsApp: link https comum, funciona no arquivo baixado e na página publicada
+  const wa=document.createElement("a");wa.className="btn wa";wa.id="share-wa";
+  wa.href="https://wa.me/?text="+encodeURIComponent(shareText(ids,hits,total));
+  wa.target="_blank";wa.rel="noopener";wa.textContent="Enviar por WhatsApp";
+  acts.appendChild(wa);
+
+  // PDF: usa a impressão do navegador ("Salvar como PDF"); só existe fora do visualizador embutido
+  if(canPrint){
+    const pdf=document.createElement("button");pdf.className="btn go";pdf.id="pdf";pdf.textContent="Salvar em PDF";
+    pdf.onclick=()=>window.print();
+    acts.appendChild(pdf);
+  }
+  const b=document.createElement("button");b.className="btn ghost";b.id="reset";b.textContent="Recomeçar";
+  b.onclick=()=>{chosen.clear();AREAS.forEach(a=>shuffle(order[a.id]));current="saude";render()};
+  acts.appendChild(b);r.appendChild(acts);panel.appendChild(r);
+  if(!canPrint)panel.insertAdjacentHTML("beforeend",'<p class="hint no-print">Para salvar em PDF, baixe o arquivo HTML e abra no navegador: o botão "Salvar em PDF" aparece lá.</p>');
+}
+
+function shareText(ids,hits,total){
+  const lines=ids.filter(i=>(hits[i]||[]).length).map((i,k)=>(k+1)+". "+C[i].name+" ("+C[i].party+"): "+hits[i].length+" de "+total[i]+" propostas");
+  return "Meu resultado na Bússola Eleições - 2026 (propostas para governador do DF, lidas sem saber o autor):\n\n"+
+    lines.join("\n")+"\n\nMarquei "+chosen.size+" propostas. Ferramenta informativa, sem apoio a candidatos. Confira os planos no DivulgaCandContas do TSE.";
+}
+
+let canPrint;try{canPrint=window.self===window.top}catch(e){canPrint=false}
+
+function render(){renderTabs();current==="resultado"?renderResult():renderArea(current)}
+
+document.getElementById("sources").innerHTML=Object.values(SRC).map(s=>'<a href="'+s[1]+'" target="_blank" rel="noopener">'+s[0]+'</a>').join("");
+render();
+</script>
